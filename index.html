@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Conceptual Map of Vulnerability Terminology</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #ffffff; font-family: 'Segoe UI', sans-serif; }
+        
+        /* 1. Viewport: Centered and full screen */
+        .viewport { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        #svg-object { width: 100%; height: 100%; border: none; display: block; }
+
+        /* 2. Minimized Hamburger Icon (Top-Right) */
+        .menu-icon { position: fixed; top: 10px; right: 10px; z-index: 1001; cursor: pointer; background: rgba(248, 249, 250, 0.9); padding: 6px; border-radius: 4px; box-shadow: 0 1px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 4px; }
+        .menu-icon div { width: 18px; height: 2px; background-color: #555; transition: 0.3s; border-radius: 2px; }
+
+        /* 3. Navigation Drawer */
+        .nav-overlay { position: fixed; top: 0; right: -250px; width: 220px; height: 100%; background: white; box-shadow: -2px 0 10px rgba(0,0,0,0.1); z-index: 1000; transition: 0.3s ease; padding-top: 60px; display: flex; flex-direction: column; }
+        .nav-overlay.open { right: 0; }
+        .nav-item { padding: 15px 25px; text-decoration: none; color: #333; font-size: 15px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .nav-item:hover { background-color: #f8f9fa; }
+
+        /* 4. Modal (Popup) Styles */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
+        .modal-content { background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 12px; width: 85%; max-width: 450px; position: relative; line-height: 1.6; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #888; }
+        h2 { margin-top: 0; color: #333; border-bottom: 2px solid #007bff; display: inline-block; padding-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="menu-icon" onclick="toggleMenu()">
+        <div></div><div></div><div></div>
+    </div>
+
+    <nav class="nav-overlay" id="navMenu">
+        <div class="nav-item" onclick="openModal('guideModal')">User Guide</div>
+        <a href="vuln-cmap.svg" target="_blank" class="nav-item">Open SVG (Native Zoom)</a>
+        
+        <a href="https://github.com/yuriylesyuk/vuln-cmap/issues/new?title=[Suggestion]+New+Update&body=Please+describe+the+change+or+addition+you+would+like+to+see+on+the+map:" 
+        target="_blank" class="nav-item">Suggest a Change</a>
+
+        <a href="https://github.com/yuriylesyuk/vuln-cmap" target="_blank" class="nav-item">GitHub Repository</a>
+        <div class="nav-item" onclick="copyToClipboard()">Copy Link</div>
+        <div class="nav-item" onclick="openModal('aboutModal')">About</div>
+    </nav>
+    <div id="guideModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('guideModal')">&times;</span>
+            <h2>User Guide</h2>
+            <p>To navigate this conceptual map:</p>
+            <ul>
+                <li><strong>View:</strong> The map automatically fits your screen.</li>
+                <li><strong>Interaction:</strong> Click on elements to visit linked resources.</li>
+                <li><strong>Zooming:</strong> For detailed inspection, select <em>"Open SVG"</em> from the menu to use your browser's native zoom and search functions.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('aboutModal')">&times;</span>
+            <h2>About</h2>
+            <p>A Conceptual Map of Vulnerability Terminology, Frameworks, and Classifications.</p>
+            <p>This project aims to provide a visual bridge between various security taxonomies.</p>
+        </div>
+    </div>
+
+    <div class="viewport">
+        <object id="svg-object" type="image/svg+xml" data="vuln-cmap.svg">Your browser does not support SVGs.</object>
+    </div>
+
+    <script>
+        function toggleMenu() { document.getElementById('navMenu').classList.toggle('open'); }
+        
+        function openModal(id) {
+            document.getElementById(id).style.display = "block";
+            toggleMenu(); 
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
+
+        function copyToClipboard() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert("Link copied!");
+                toggleMenu();
+            });
+        }
+
+        window.onclick = function(event) {
+            const menu = document.getElementById('navMenu');
+            const icon = document.querySelector('.menu-icon');
+            if (!menu.contains(event.target) && !icon.contains(event.target)) {
+                menu.classList.remove('open');
+            }
+            if (event.target.className === 'modal') {
+                event.target.style.display = "none";
+            }
+        };
+    </script>
+</body>
+</html>
